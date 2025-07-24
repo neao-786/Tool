@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online image compressor with format conversion to JPEG, PNG, WebP, and PDF, plus zoomable previews. Optimize images easily.">
+    <meta name="keywords" content="image compression, image to pdf, image format converter, JPEG to PNG, PNG to WebP, image to pdf, image zoom, optimize images, free image compressor">
+    <meta name="author" content="Image Compression Tool">
+    <meta name="robots" content="index, follow">
+    <title>Image Compressor - Optimize, Convert to JPEG, PNG, WebP, or PDF</title>
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Image Compressor - Optimize, Convert to JPEG, PNG, WebP, or PDF">
+    <meta property="og:description" content="Compress and convert images to JPEG, PNG, WebP, or PDF with zoomable previews. Free online tool for image optimization.">
+    <meta property="og:image" content="https://yourdomain.com/images/og-image.jpg">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:type" content="website">
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Image Compressor - Optimize, Convert to JPEG, PNG, WebP, or PDF">
+    <meta name="twitter:description" content="Compress and convert images to JPEG, PNG, WebP, or PDF with zoomable previews. Free online tool for image optimization.">
+    <meta name="twitter:image" content="https://yourdomain.com/images/og-image.jpg">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.ico">
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: #e5e7eb;
+        }
+        .ad-container {
+            margin: 20px auto;
+            text-align: center;
+            max-width: 728px;
+        }
+        #preview, #compressedPreview {
+            max-width: 100%;
+            height: auto;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            cursor: pointer;
+        }
+        #preview:hover, #compressedPreview:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+        .drag-over {
+            border: 2px dashed #60a5fa;
+            background-color: #2d3748;
+            transition: all 0.3s ease;
+        }
+        .loader {
+            display: none;
+            border: 4px solid #60a5fa;
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+        button {
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-gray-900 text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <h1 class="text-3xl font-bold tracking-tight">Image Compressor</h1>
+            <p class="mt-2 text-lg text-gray-300">Optimize and convert images to JPEG, PNG, WebP, or PDF</p>
+        </div>
+    </header>
+
+    <!-- Ad Space: Banner Ad at the Top -->
+    <div class="ad-container">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="YOUR_AD_SLOT_ID"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-10 max-w-4xl">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-semibold mb-6 text-white">Upload, Compress, and Convert Image</h2>
+            <div class="mb-6">
+                <label for="imageInput" class="block text-sm font-medium text-gray-300 mb-2">Select Image</label>
+                <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700" aria-label="Upload image file">
+                <div id="dropZone" class="mt-4 p-6 border-2 border-gray-600 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition">
+                    <p class="text-gray-400">Or drag and drop your image here</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="compressionLevel" class="block text-sm font-medium text-gray-300 mb-2">Compression Level</label>
+                    <input type="range" id="compressionLevel" min="1" max="100" value="80" class="w-full h-2 bg-gray-600 rounded-lg cursor-pointer" aria-label="Adjust compression level">
+                    <span id="compressionValue" class="text-sm text-gray-400">80%</span>
+                </div>
+                <div>
+                    <label for="outputFormat" class="block text-sm font-medium text-gray-300 mb-2">Output Format</label>
+                    <select id="outputFormat" class="block w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-blue-500 focus:border-blue-500" aria-label="Select output format">
+                        <option value="image/jpeg">JPEG</option>
+                        <option value="image/png">PNG</option>
+                        <option value="image/webp">WebP</option>
+                        <option value="application/pdf">PDF</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-6">
+                <button id="compressButton" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" aria-label="Compress and convert image">Compress & Convert</button>
+            </div>
+            <div id="loader" class="loader"></div>
+
+            <!-- Preview Section -->
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-white">Original Image</h3>
+                    <img id="preview" class="mt-4 rounded-lg shadow-sm" alt="Original Image Preview" aria-label="Click to zoom original image">
+                    <p id="originalSize" class="text-sm text-gray-400 mt-2"></p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-white">Output Preview</h3>
+                    <img id="compressedPreview" class="mt-4 rounded-lg shadow-sm" alt="Compressed Image Preview" aria-label="Click to zoom compressed image" style="display: none;">
+                    <p id="compressedSize" class="text-sm text-gray-400 mt-2"></p>
+                    <a id="downloadImageLink" class="mt-4 inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800" style="display: none;" aria-label="Download compressed image">Download Compressed Image</a>
+                    <a id="downloadPDFLink" class="mt-4 inline-block bg-red-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800" style="display: none;" aria-label="Download PDF">Download PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Image Zoom -->
+        <div id="imageModal" class="modal">
+            <img id="modalImage" alt="Zoomed Image">
+        </div>
+
+        <!-- Ad Space: Sidebar Ad -->
+        <div class="ad-container mt-8">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="YOUR_AD_SLOT_ID"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-6">
+        <div class="container mx-auto px-4 text-center max-w-4xl">
+            <p>© 2025 Image Compressor. All rights reserved.</p>
+            <p class="mt-2">
+                <a href="/privacy-policy" class="underline hover:text-blue-400">Privacy Policy</a> | 
+                <a href="/terms" class="underline hover:text-blue-400">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript for Image Compression, Format Conversion, PDF Output, and Zoom
+        const { jsPDF } = window.jspdf;
+        const imageInput = document.getElementById('imageInput');
+        const dropZone = document.getElementById('dropZone');
+        const compressionLevel = document.getElementById('compressionLevel');
+        const compressionValue = document.getElementById('compressionValue');
+        const outputFormat = document.getElementById('outputFormat');
+        const compressButton = document.getElementById('compressButton');
+        const preview = document.getElementById('preview');
+        const compressedPreview = document.getElementById('compressedPreview');
+        const originalSize = document.getElementById('originalSize');
+        const compressedSize = document.getElementById('compressedSize');
+        const downloadImageLink = document.getElementById('downloadImageLink');
+        const downloadPDFLink = document.getElementById('downloadPDFLink');
+        const loader = document.getElementById('loader');
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        // Update compression level display
+        compressionLevel.addEventListener('input', () => {
+            compressionValue.textContent = `${compressionLevel.value}%`;
+        });
+
+        // Handle file input
+        imageInput.addEventListener('change', handleFileSelect);
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                imageInput.files = files;
+                handleFileSelect({ target: { files } });
+            }
+        });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    originalSize.textContent = `Size: ${(file.size / 1024).toFixed(2)} KB`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please select a valid image file (JPEG, PNG, or WebP).');
+            }
+        }
+
+        // Show loader
+        function showLoader() {
+            loader.style.display = 'block';
+        }
+
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+
+        // Compress and convert image
+        compressButton.addEventListener('click', () => {
+            const file = imageInput.files[0];
+            if (!file) {
+                alert('Please select an image first.');
+                return;
+            }
+
+            showLoader();
+            const quality = compressionLevel.value / 100;
+            const selectedFormat = outputFormat.value;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    if (selectedFormat === 'application/pdf') {
+                        // Generate PDF
+                        const pdf = new jsPDF({
+                            orientation: img.width > img.height ? 'landscape' : 'portrait',
+                            unit: 'px',
+                            format: [img.width, img.height]
+                        });
+                        canvas.toBlob((blob) => {
+                            const tempImg = new Image();
+                            tempImg.src = URL.createObjectURL(blob);
+                            tempImg.onload = () => {
+                                pdf.addImage(tempImg, 'JPEG', 0, 0, img.width, img.height);
+                                const pdfBlob = pdf.output('blob');
+                                compressedPreview.style.display = 'none';
+                                compressedSize.textContent = `PDF Size: ${(pdfBlob.size / 1024).toFixed(2)} KB`;
+                                downloadImageLink.style.display = 'none';
+                                downloadPDFLink.href = URL.createObjectURL(pdfBlob);
+                                downloadPDFLink.download = `converted_${file.name.split('.')[0]}.pdf`;
+                                downloadPDFLink.style.display = 'inline-block';
+                                hideLoader();
+                            };
+                        }, 'image/jpeg', quality);
+                    } else {
+                        // Generate compressed image
+                        canvas.toBlob((blob) => {
+                            compressedPreview.src = URL.createObjectURL(blob);
+                            compressedPreview.style.display = 'block';
+                            compressedSize.textContent = `Size: ${(blob.size / 1024).toFixed(2)} KB`;
+                            downloadImageLink.href = URL.createObjectURL(blob);
+                            downloadImageLink.download = `compressed_${file.name.split('.')[0]}.${selectedFormat.split('/')[1]}`;
+                            downloadImageLink.style.display = 'inline-block';
+                            downloadPDFLink.style.display = 'none';
+                            window.compressedImageData = { src: compressedPreview.src, width: img.width, height: img.height };
+                            hideLoader();
+                        }, selectedFormat, quality);
+                    }
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Image Zoom Modal
+        preview.addEventListener('click', () => {
+            if (preview.src) {
+                modalImage.src = preview.src;
+                imageModal.style.display = 'flex';
+            }
+        });
+
+        compressedPreview.addEventListener('click', () => {
+            if (compressedPreview.src && compressedPreview.style.display !== 'none') {
+                modalImage.src = compressedPreview.src;
+                imageModal.style.display = 'flex';
+            }
+        });
+
+        imageModal.addEventListener('click', () => {
+            imageModal.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
