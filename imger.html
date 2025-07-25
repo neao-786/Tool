@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced image compression, JPG to PDF, PDF to JPG, PDF merge, and text extraction from PDF/JPG files. Optimize images and extract text with precision.">
+    <meta name="keywords" content="image compression, JPG to PDF, PDF to JPG, PDF merge, text extraction, image optimizer, high-tech converter">
+    <meta name="author" content="Image Compression Tool">
+    <meta name="robots" content="index, follow">
+    <title>Quantum Image Compressor & Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3455043700825177" crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;600&display=swap');
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        .ad-container { margin: 20px auto; text-align: center; }
+        .card { 
+            background: #1e293b; 
+            border: 1px solid #38bdf8; 
+            border-radius: 12px; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); 
+        }
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.5); 
+        }
+        #preview img, #preview canvas, #pdfPreview img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 8px; 
+            border: 1px solid #38bdf8; 
+        }
+        .hidden { display: none; }
+        .progress-bar { 
+            width: 0%; 
+            height: 6px; 
+            background: linear-gradient(to right, #38bdf8, #10b981); 
+            border-radius: 3px; 
+            transition: width 0.5s ease-in-out; 
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.7); 
+        }
+        .btn-primary { 
+            background: linear-gradient(to right, #38bdf8, #10b981); 
+            transition: all 0.3s ease; 
+            border: none; 
+            border-radius: 8px; 
+            font-family: 'Orbitron', sans-serif; 
+        }
+        .btn-primary:hover { 
+            background: linear-gradient(to right, #0284c7, #059669); 
+            transform: scale(1.05); 
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.7); 
+        }
+        .input-file { 
+            background: #2d3748; 
+            border: 1px solid #38bdf8; 
+            border-radius: 8px; 
+            padding: 12px; 
+            transition: all 0.3s ease; 
+            color: #e2e8f0; 
+        }
+        .input-file:hover { 
+            background: #374151; 
+            border-color: #60a5fa; 
+        }
+        .range-slider { 
+            accent-color: #38bdf8; 
+            background: #2d3748; 
+            height: 8px; 
+            border-radius: 4px; 
+        }
+        .header-text { 
+            font-family: 'Orbitron', sans-serif; 
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.8); 
+        }
+        .text-output { 
+            background: #2d3748; 
+            border: 1px solid #38bdf8; 
+            border-radius: 8px; 
+            padding: 12px; 
+            color: #e2e8f0; 
+            min-height: 100px; 
+            max-height: 300px; 
+            overflow-y: auto; 
+        }
+        .error-message {
+            color: #f87171;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        @media (max-width: 640px) {
+            .ad-container { margin: 10px auto; }
+            h1 { font-size: 2rem; }
+            .card { padding: 1.5rem; }
+        }
+        @keyframes neonGlow { 
+            0% { text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8; } 
+            50% { text-shadow: 0 0 10px #38bdf8, 0 0 20px #38bdf8; } 
+            100% { text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8; } 
+        }
+        .neon { animation: neonGlow 2s infinite; }
+        @keyframes slideIn { 
+            from { transform: translateY(20px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+        .slide-in { animation: slideIn 0.5s ease-out; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="bg-gradient-to-r from-gray-900 to-blue-900 text-white py-12 shadow-lg">
+        <div class="container mx-auto text-center">
+            <h1 class="header-text text-4xl md:text-5xl font-bold tracking-wide neon">Quantum Image Compressor & Converter</h1>
+            <p class="mt-4 text-lg md:text-xl opacity-90">Next-gen image optimization, format conversion, PDF merging, and text extraction</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-12 px-4 flex-grow">
+        <!-- Top Ad -->
+        <div class="ad-container max-w-3xl mx-auto">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-3455043700825177"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <section class="card p-8 mb-8 slide-in">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-white neon">Image Compression</h2>
+            <input type="file" id="imageInput" accept="image/jpeg,image/png" class="input-file block w-full mb-4">
+            <label for="compressionLevel" class="block mb-2 text-gray-300 font-medium">Compression Precision:</label>
+            <input type="range" id="compressionLevel" min="1" max="100" value="80" class="range-slider w-full mb-4">
+            <span id="compressionValue" class="block mb-4 text-gray-400">80%</span>
+            <button id="compressBtn" class="btn-primary text-white px-6 py-3 font-medium">Optimize Image</button>
+            <div id="progress" class="progress-bar mt-4"></div>
+            <div id="preview" class="mt-6"></div>
+            <a id="downloadLink" class="hidden bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-3 rounded-lg mt-4 inline-block hover:bg-green-600 transition-colors">Download Optimized Image</a>
+        </section>
+
+        <section class="card p-8 mb-8 slide-in">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-white neon">JPG to PDF Converter</h2>
+            <input type="file" id="jpgInput" accept="image/jpeg" class="input-file block w-full mb-4">
+            <button id="jpgToPdfBtn" class="btn-primary text-white px-6 py-3 font-medium">Convert to PDF</button>
+            <div id="jpgProgress" class="progress-bar mt-4"></div>
+            <a id="jpgDownloadLink" class="hidden bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-3 rounded-lg mt-4 inline-block hover:bg-green-600 transition-colors">Download PDF</a>
+        </section>
+
+        <section class="card p-8 mb-8 slide-in">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-white neon">PDF to JPG Converter</h2>
+            <input type="file" id="pdfInput" accept="application/pdf" class="input-file block w-full mb-4">
+            <button id="pdfToJpgBtn" class="btn-primary text-white px-6 py-3 font-medium">Convert to JPG</button>
+            <div id="pdfProgress" class="progress-bar mt-4"></div>
+            <div id="pdfPreview" class="mt-6"></div>
+            <a id="pdfDownloadLink" class="hidden bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-3 rounded-lg mt-4 inline-block hover:bg-green-600 transition-colors">Download JPG</a>
+        </section>
+
+        <section class="card p-8 mb-8 slide-in">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-white neon">PDF Merge</h2>
+            <input type="file" id="pdfMergeInput" accept="application/pdf" multiple class="input-file block w-full mb-4">
+            <button id="pdfMergeBtn" class="btn-primary text-white px-6 py-3 font-medium">Merge PDFs</button>
+            <div id="mergeProgress" class="progress-bar mt-4"></div>
+            <a id="mergeDownloadLink" class="hidden bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-3 rounded-lg mt-4 inline-block hover:bg-green-600 transition-colors">Download Merged PDF</a>
+        </section>
+
+        <section class="card p-8 mb-8 slide-in">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-white neon">Text Extraction from PDF/JPG</h2>
+            <input type="file" id="textExtractInput" accept="image/jpeg,application/pdf" class="input-file block w-full mb-4">
+            <button id="extractTextBtn" class="btn-primary text-white px-6 py-3 font-medium">Extract Text</button>
+            <div id="textProgress" class="progress-bar mt-4"></div>
+            <div id="textError" class="error-message hidden"></div>
+            <div id="textOutput" class="text-output mt-6"></div>
+            <button id="copyTextBtn" class="hidden btn-primary text-white px-6 py-3 rounded-lg mt-4 font-medium">Copy Extracted Text</button>
+        </section>
+
+        <!-- Sidebar Ad -->
+        <aside class="ad-container max-w-sm mx-auto md:mx-0 md:w-1/4">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-3455043700825177"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </aside>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto text-center">
+            <p class="text-sm opacity-80">© 2025 Quantum Image Compressor & Converter. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+    <script>
+        const { jsPDF } = window.jspdf;
+        const compressBtn = document.getElementById('compressBtn');
+        const imageInput = document.getElementById('imageInput');
+        const compressionLevel = document.getElementById('compressionLevel');
+        const compressionValue = document.getElementById('compressionValue');
+        const progress = document.getElementById('progress');
+        const preview = document.getElementById('preview');
+        const downloadLink = document.getElementById('downloadLink');
+        const jpgInput = document.getElementById('jpgInput');
+        const jpgToPdfBtn = document.getElementById('jpgToPdfBtn');
+        const jpgProgress = document.getElementById('jpgProgress');
+        const jpgDownloadLink = document.getElementById('jpgDownloadLink');
+        const pdfInput = document.getElementById('pdfInput');
+        const pdfToJpgBtn = document.getElementById('pdfToJpgBtn');
+        const pdfProgress = document.getElementById('pdfProgress');
+        const pdfPreview = document.getElementById('pdfPreview');
+        const pdfDownloadLink = document.getElementById('pdfDownloadLink');
+        const pdfMergeInput = document.getElementById('pdfMergeInput');
+        const pdfMergeBtn = document.getElementById('pdfMergeBtn');
+        const mergeProgress = document.getElementById('mergeProgress');
+        const mergeDownloadLink = document.getElementById('mergeDownloadLink');
+        const textExtractInput = document.getElementById('textExtractInput');
+        const extractTextBtn = document.getElementById('extractTextBtn');
+        const textProgress = document.getElementById('textProgress');
+        const textError = document.getElementById('textError');
+        const textOutput = document.getElementById('textOutput');
+        const copyTextBtn = document.getElementById('copyTextBtn');
+
+        compressionLevel.addEventListener('input', () => {
+            compressionValue.textContent = `${compressionLevel.value}%`;
+        });
+
+        compressBtn.addEventListener('click', async () => {
+            const file = imageInput.files[0];
+            if (!file) {
+                alert('Please select an image.');
+                return;
+            }
+            if (!['image/jpeg', 'image/png'].includes(file.type)) {
+                alert('Please select a valid JPEG or PNG image.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const img = new Image();
+                img.src = reader.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    progress.style.width = '50%';
+                    setTimeout(() => {
+                        const quality = compressionLevel.value / 100;
+                        const compressedData = canvas.toDataURL('image/jpeg', quality);
+                        preview.innerHTML = `<img src="${compressedData}" alt="Compressed Image">`;
+                        downloadLink.href = compressedData;
+                        downloadLink.download = 'compressed_image.jpg';
+                        downloadLink.classList.remove('hidden');
+                        progress.style.width = '100%';
+                        setTimeout(() => progress.style.width = '0%', 1000);
+                    }, 1000);
+                };
+                img.onerror = () => {
+                    alert('Failed to load image. Please try another file.');
+                    progress.style.width = '0%';
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        jpgToPdfBtn.addEventListener('click', () => {
+            const file = jpgInput.files[0];
+            if (!file) {
+                alert('Please select a JPG image.');
+                return;
+            }
+            if (file.type !== 'image/jpeg') {
+                alert('Please select a valid JPEG image.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                const img = new Image();
+                img.src = reader.result;
+                img.onload = () => {
+                    const doc = new jsPDF();
+                    const imgWidth = doc.internal.pageSize.getWidth() - 20;
+                    const imgHeight = (img.height * imgWidth) / img.width;
+                    doc.addImage(img, 'JPEG', 10, 10, imgWidth, imgHeight);
+                    const pdfData = doc.output('datauristring');
+                    jpgDownloadLink.href = pdfData;
+                    jpgDownloadLink.download = 'converted.pdf';
+                    jpgDownloadLink.classList.remove('hidden');
+                    jpgProgress.style.width = '100%';
+                    setTimeout(() => jpgProgress.style.width = '0%', 1000);
+                };
+                img.onerror = () => {
+                    alert('Failed to load image. Please try another file.');
+                    jpgProgress.style.width = '0%';
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        pdfToJpgBtn.addEventListener('click', async () => {
+            const file = pdfInput.files[0];
+            if (!file) {
+                alert('Please select a PDF file.');
+                return;
+            }
+            if (file.type !== 'application/pdf') {
+                alert('Please select a valid PDF file.');
+                return;
+            }
+
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+            const reader = new FileReader();
+            reader.onload = async () => {
+                try {
+                    const pdf = await pdfjsLib.getDocument(reader.result).promise;
+                    const page = await pdf.getPage(1);
+                    const viewport = page.getViewport({ scale: 1.0 });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+                    pdfPreview.innerHTML = `<img src="${canvas.toDataURL('image/jpeg')}" alt="Converted JPG">`;
+                    pdfDownloadLink.href = canvas.toDataURL('image/jpeg');
+                    pdfDownloadLink.download = 'converted.jpg';
+                    pdfDownloadLink.classList.remove('hidden');
+                    pdfProgress.style.width = '100%';
+                    setTimeout(() => pdfProgress.style.width = '0%', 1000);
+                } catch (error) {
+                    alert('Failed to process PDF. Please try another file.');
+                    pdfProgress.style.width = '0%';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        pdfMergeBtn.addEventListener('click', async () => {
+            const files = pdfMergeInput.files;
+            if (files.length < 2) {
+                alert('Please select at least two PDF files to merge.');
+                return;
+            }
+            for (let file of files) {
+                if (file.type !== 'application/pdf') {
+                    alert('Please select valid PDF files.');
+                    return;
+                }
+            }
+
+            mergeProgress.style.width = '20%';
+            const doc = new jsPDF();
+            let currentY = 0;
+
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+
+                    await new Promise((resolve) => {
+                        reader.onload = async () => {
+                            const pdf = await pdfjsLib.getDocument(reader.result).promise;
+                            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                                const page = await pdf.getPage(pageNum);
+                                const viewport = page.getViewport({ scale: 1.0 });
+                                const canvas = document.createElement('canvas');
+                                const ctx = canvas.getContext('2d');
+                                canvas.height = viewport.height;
+                                canvas.width = viewport.width;
+
+                                await page.render({ canvasContext: ctx, viewport }).promise;
+                                const imgData = canvas.toDataURL('image/jpeg', 0.8);
+                                const imgWidth = doc.internal.pageSize.getWidth() - 20;
+                                const imgHeight = (viewport.height * imgWidth) / viewport.width;
+
+                                if (currentY + imgHeight > doc.internal.pageSize.getHeight() - 20 && currentY !== 0) {
+                                    doc.addPage();
+                                    currentY = 0;
+                                }
+                                doc.addImage(imgData, 'JPEG', 10, currentY + 10, imgWidth, imgHeight);
+                                currentY += imgHeight + 20;
+                            }
+                            resolve();
+                        };
+                        reader.readAsArrayBuffer(file);
+                    });
+                    mergeProgress.style.width = `${((i + 1) / files.length) * 100}%`;
+                }
+
+                const pdfData = doc.output('datauristring');
+                mergeDownloadLink.href = pdfData;
+                mergeDownloadLink.download = 'merged.pdf';
+                mergeDownloadLink.classList.remove('hidden');
+                setTimeout(() => mergeProgress.style.width = '0%', 1000);
+            } catch (error) {
+                alert('Failed to merge PDFs. Please try again.');
+                mergeProgress.style.width = '0%';
+            }
+        });
+
+        extractTextBtn.addEventListener('click', async () => {
+            const file = textExtractInput.files[0];
+            if (!file) {
+                textError.textContent = 'Please select a JPG or PDF file.';
+                textError.classList.remove('hidden');
+                return;
+            }
+            if (!['image/jpeg', 'application/pdf'].includes(file.type)) {
+                textError.textContent = 'Please select a valid JPG or PDF file.';
+                textError.classList.remove('hidden');
+                return;
+            }
+
+            textProgress.style.width = '20%';
+            textOutput.textContent = 'Processing...';
+            textError.classList.add('hidden');
+
+            try {
+                if (file.type === 'application/pdf') {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+                    const reader = new FileReader();
+                    reader.onload = async () => {
+                        try {
+                            const pdf = await pdfjsLib.getDocument(reader.result).promise;
+                            if (pdf.numPages === 0) {
+                                textError.textContent = 'PDF is empty or invalid.';
+                                textError.classList.remove('hidden');
+                                textProgress.style.width = '0%';
+                                textOutput.textContent = '';
+                                return;
+                            }
+                            const page = await pdf.getPage(1);
+                            const viewport = page.getViewport({ scale: 1.0 });
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+
+                            await page.render({ canvasContext: ctx, viewport }).promise;
+                            textProgress.style.width = '50%';
+
+                            const { data: { text } } = await Tesseract.recognize(canvas, 'eng', {
+                                logger: (m) => {
+                                    textProgress.style.width = `${Math.min(m.progress * 50 + 50, 90)}%`;
+                                }
+                            });
+
+                            textProgress.style.width = '100%';
+                            textOutput.textContent = text || 'No text detected.';
+                            copyTextBtn.classList.remove('hidden');
+                            setTimeout(() => textProgress.style.width = '0%', 1000);
+                        } catch (error) {
+                            textError.textContent = 'Failed to process PDF. Please try another file.';
+                            textError.classList.remove('hidden');
+                            textOutput.textContent = '';
+                            textProgress.style.width = '0%';
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = async () => {
+                        try {
+                            const { data: { text } } = await Tesseract.recognize(reader.result, 'eng', {
+                                logger: (m) => {
+                                    textProgress.style.width = `${Math.min(m.progress * 70 + 20, 90)}%`;
+                                }
+                            });
+
+                            textProgress.style.width = '100%';
+                            textOutput.textContent = text || 'No text detected.';
+                            copyTextBtn.classList.remove('hidden');
+                            setTimeout(() => textProgress.style.width = '0%', 1000);
+                        } catch (error) {
+                            textError.textContent = 'Failed to process image. Please try another file.';
+                            textError.classList.remove('hidden');
+                            textOutput.textContent = '';
+                            textProgress.style.width = '0%';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            } catch (error) {
+                textError.textContent = 'An unexpected error occurred. Please try again.';
+                textError.classList.remove('hidden');
+                textOutput.textContent = '';
+                textProgress.style.width = '0%';
+            }
+        });
+
+        copyTextBtn.addEventListener('click', () => {
+            const text = textOutput.textContent;
+            if (text && text !== 'Processing...') {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Extracted text copied to clipboard!');
+                }).catch(() => {
+                    alert('Failed to copy text to clipboard.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
