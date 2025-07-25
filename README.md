@@ -25,7 +25,7 @@ Text Extraction: Extract text from JPG or PDF files using OCR (powered by Tesser
 
 Responsive Design: Built with Tailwind CSS for a seamless experience on mobile, tablet, and desktop.
 High-Tech UI: Cyberpunk-inspired aesthetic with neon animations and intuitive navigation.
-AdSense Integration: Monetized with Google AdSense (client ID: ca-pub-3455043700825177) for sustainable operation.
+AdSense Integration: Monetized with Google AdSense () for sustainable operation.
 SEO Optimized: Meta tags and semantic HTML ensure high visibility on search engines.
 
 Installation
@@ -52,8 +52,6 @@ Open http://localhost:8000 in your browser to view the homepage (index.html).
 
 AdSense Configuration:
 
-Replace data-ad-slot="1234567890" in index.html and tools.html with your actual AdSense ad unit slot IDs.
-The AdSense client ID (ca-pub-3455043700825177) is already configured.
 
 
 
