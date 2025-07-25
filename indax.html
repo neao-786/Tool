@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online PDF to JPG converter with high-quality output and zoomable previews. Convert PDF pages to images instantly.">
+    <meta name="keywords" content="PDF to JPG, PDF to image, convert PDF to JPG, PDF converter, high-quality JPG, zoomable previews, free PDF tool">
+    <meta name="author" content="Image Compression Tool">
+    <meta name="robots" content="index, follow">
+    <title>PDF to JPG Converter - High-Quality Image Extraction</title>
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="PDF to JPG Converter - High-Quality Image Extraction">
+    <meta property="og:description" content="Convert PDF pages to high-quality JPG images with zoomable previews. Free, fast, and secure online tool.">
+    <meta property="og:image" content="https://yourdomain.com/images/og-image.jpg">
+    <meta property="og:url" content="https://yourdomain.com/pdf-to-jpg.html">
+    <meta property="og:type" content="website">
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PDF to JPG Converter - High-Quality Image Extraction">
+    <meta name="twitter:description" content="Convert PDF pages to high-quality JPG images with zoomable previews. Free, fast, and secure online tool.">
+    <meta name="twitter:image" content="https://yourdomain.com/images/og-image.jpg">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.ico">
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- JSZip CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #111827;
+            color: #e5e7eb;
+        }
+        .ad-container {
+            margin: 24px auto;
+            text-align: center;
+            max-width: 728px;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .preview-img {
+            max-width: 100%;
+            height: auto;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            cursor: pointer;
+        }
+        .preview-img:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+        .drag-over {
+            border: 2px dashed #1d4ed8;
+            background-color: #1f2937;
+            transition: all 0.3s ease;
+        }
+        .loader {
+            display: none;
+            border: 4px solid #1d4ed8;
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal.show {
+            opacity: 1;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .close-modal:hover {
+            transform: scale(1.2);
+        }
+        button, a[role="button"] {
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        button:hover, a[role="button"]:hover {
+            transform: scale(1.05);
+        }
+        .tooltip {
+            position: relative;
+        }
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1f2937;
+            color: #e5e7eb;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3455043700825177"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-gray-900 text-white py-6 shadow-lg sticky top-0 z-10">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h1 class="text-4xl font-bold tracking-tight">PDF to JPG Converter</h1>
+            <p class="mt-2 text-lg text-gray-300">Extract high-quality images from PDFs instantly</p>
+        </div>
+    </header>
+
+    <!-- Ad Space: Banner Ad at the Top -->
+    <div class="ad-container">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-3455043700825177"
+             data-ad-slot="YOUR_AD_SLOT_ID_TOP"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12 max-w-5xl">
+        <div class="glassmorphism p-8 rounded-xl shadow-lg fade-in">
+            <h2 class="text-2xl font-semibold mb-6 text-white">Convert PDF to JPG</h2>
+            <div class="mb-6">
+                <label for="pdfInput" class="block text-sm font-medium text-gray-300 mb-2">Select PDF</label>
+                <input type="file" id="pdfInput" accept="application/pdf" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-700 file:text-white hover:file:bg-blue-800 tooltip" data-tooltip="Choose a PDF file to convert" aria-label="Upload PDF file">
+                <div id="dropZone" class="mt-4 p-6 border-2 border-gray-600 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition">
+                    <p class="text-gray-400">Or drag and drop your PDF here</p>
+                </div>
+            </div>
+            <div class="mb-6">
+                <button id="convertButton" class="bg-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 tooltip" data-tooltip="Convert PDF to JPG images" aria-label="Convert PDF to JPG">Convert to JPG</button>
+            </div>
+            <div id="loader" class="loader"></div>
+
+            <!-- Preview Section -->
+            <div id="previewSection" class="mt-8" style="display: none;">
+                <h3 class="text-lg font-medium text-white mb-4 text-center">Converted Images</h3>
+                <div id="previewContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+                <div class="mt-6 text-center">
+                    <a id="downloadAllLink" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800 tooltip" style="display: none;" role="button" data-tooltip="Download all JPGs as a ZIP file" aria-label="Download all JPGs">Download All as ZIP</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Image Zoom -->
+        <div id="imageModal" class="modal">
+            <span class="close-modal" aria-label="Close zoom modal">×</span>
+            <img id="modalImage" alt="Zoomed Image">
+        </div>
+
+        <!-- Ad Space: Sidebar Ad -->
+        <div class="ad-container mt-8">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-3455043700825177"
+                 data-ad-slot="YOUR_AD_SLOT_ID_SIDEBAR"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-8">
+        <div class="container mx-auto px-4 text-center max-w-5xl">
+            <p>© 2025 Image Compressor. All rights reserved.</p>
+            <p class="mt-2">
+                <a href="/privacy-policy" class="underline hover:text-blue-400" aria-label="Privacy Policy">Privacy Policy</a> | 
+                <a href="/terms" class="underline hover:text-blue-400" aria-label="Terms of Service">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            const pdfInput = document.getElementById('pdfInput');
+            const dropZone = document.getElementById('dropZone');
+            const convertButton = document.getElementById('convertButton');
+            const loader = document.getElementById('loader');
+            const previewSection = document.getElementById('previewSection');
+            const previewContainer = document.getElementById('previewContainer');
+            const downloadAllLink = document.getElementById('downloadAllLink');
+            const imageModal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const closeModal = document.querySelector('.close-modal');
+
+            // Fade-in animations
+            const fadeInElements = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+            fadeInElements.forEach(element => observer.observe(element));
+
+            // Handle file input
+            if (pdfInput) {
+                pdfInput.addEventListener('change', handleFileSelect);
+            }
+            if (dropZone) {
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('drag-over');
+                });
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('drag-over');
+                });
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('drag-over');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        pdfInput.files = files;
+                        handleFileSelect({ target: { files } });
+                    }
+                });
+            }
+
+            function handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file && file.type === 'application/pdf') {
+                    previewSection.style.display = 'none';
+                    downloadAllLink.style.display = 'none';
+                    previewContainer.innerHTML = '';
+                } else {
+                    alert('Please select a valid PDF file.');
+                }
+            }
+
+            // Show loader
+            function showLoader() {
+                if (loader) loader.style.display = 'block';
+            }
+
+            function hideLoader() {
+                if (loader) loader.style.display = 'none';
+            }
+
+            // Convert PDF to JPG
+            if (convertButton) {
+                convertButton.addEventListener('click', async () => {
+                    const file = pdfInput.files[0];
+                    if (!file) {
+                        alert('Please select a PDF file first.');
+                        return;
+                    }
+
+                    showLoader();
+                    previewContainer.innerHTML = '';
+                    const zip = new JSZip();
+                    const fileReader = new FileReader();
+
+                    fileReader.onload = async () => {
+                        try {
+                            const pdfData = new Uint8Array(fileReader.result);
+                            const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+                            const numPages = pdf.numPages;
+                            const images = [];
+
+                            for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                                const page = await pdf.getPage(pageNum);
+                                const viewport = page.getViewport({ scale: 2 }); // Higher scale for quality
+                                const canvas = document.createElement('canvas');
+                                const ctx = canvas.getContext('2d');
+                                canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+
+                                await page.render({
+                                    canvasContext: ctx,
+                                    viewport: viewport
+                                }).promise;
+
+                                const imgData = canvas.toDataURL('image/jpeg', 0.9);
+                                images.push(imgData);
+
+                                // Create preview
+                                const img = document.createElement('img');
+                                img.src = imgData;
+                                img.classList.add('preview-img', 'rounded-lg', 'shadow-sm');
+                                img.alt = `Page ${pageNum} Preview`;
+                                img.setAttribute('aria-label', `Click to zoom page ${pageNum}`);
+                                img.addEventListener('click', () => {
+                                    if (imageModal && modalImage) {
+                                        modalImage.src = imgData;
+                                        imageModal.style.display = 'flex';
+                                        setTimeout(() => imageModal.classList.add('show'), 10);
+                                    }
+                                });
+
+                                const downloadLink = document.createElement('a');
+                                downloadLink.href = imgData;
+                                downloadLink.download = `page_${pageNum}.jpg`;
+                                downloadLink.textContent = `Download Page ${pageNum}`;
+                                downloadLink.classList.add('block', 'text-blue-400', 'underline', 'mt-2', 'text-center', 'tooltip');
+                                downloadLink.setAttribute('data-tooltip', `Download page ${pageNum} as JPG`);
+                                downloadLink.setAttribute('aria-label', `Download page ${pageNum} as JPG`);
+
+                                const div = document.createElement('div');
+                                div.classList.add('text-center');
+                                div.appendChild(img);
+                                div.appendChild(downloadLink);
+                                previewContainer.appendChild(div);
+
+                                // Add to ZIP
+                                const imgBlob = await fetch(imgData).then(res => res.blob());
+                                zip.file(`page_${pageNum}.jpg`, imgBlob);
+                            }
+
+                            // Show preview section
+                            previewSection.style.display = 'block';
+
+                            // Generate ZIP file
+                            const zipBlob = await zip.generateAsync({ type: 'blob' });
+                            if (downloadAllLink) {
+                                downloadAllLink.href = URL.createObjectURL(zipBlob);
+                                downloadAllLink.download = 'converted_pages.zip';
+                                downloadAllLink.style.display = 'inline-block';
+                            }
+
+                            hideLoader();
+                        } catch (error) {
+                            console.error('PDF conversion error:', error);
+                            alert('Failed to convert PDF. Please try again.');
+                            hideLoader();
+                        }
+                    };
+
+                    fileReader.readAsArrayBuffer(file);
+                });
+            }
+
+            // Image Zoom Modal
+            if (imageModal && closeModal) {
+                imageModal.addEventListener('click', (e) => {
+                    if (e.target === imageModal || e.target === closeModal) {
+                        imageModal.classList.remove('show');
+                        setTimeout(() => imageModal.style.display = 'none', 300);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
